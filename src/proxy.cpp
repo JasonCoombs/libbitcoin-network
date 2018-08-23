@@ -259,7 +259,15 @@ void proxy::handle_read_payload(const boost_code& ec, size_t payload_size,
         << "] (" << payload_size << " bytes)";
 
     signal_activity();
+
+    LOG_VERBOSE(LOG_NETWORK)
+    << "signal_activity done.";
+
     read_heading();
+
+    LOG_VERBOSE(LOG_NETWORK)
+    << "read_heading done.";
+
 }
 
 // Message send sequence.
