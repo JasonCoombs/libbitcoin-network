@@ -54,7 +54,7 @@ public:
 protected:
     void send_ping(const code& ec) override;
 
-    void handle_send_ping(const code& ec, const std::string& command);
+    void handle_send_ping(const code& ec, std::string& command);
     bool handle_receive_ping(const code& ec, ping_const_ptr message) override;
     virtual bool handle_receive_pong(const code& ec, pong_const_ptr message,
         uint64_t nonce);

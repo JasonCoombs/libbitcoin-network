@@ -48,11 +48,21 @@ acceptor::acceptor(threadpool& pool, const settings& settings)
 
 acceptor::~acceptor()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " ~acceptor()";
+
     BITCOIN_ASSERT_MSG(stopped(), "The acceptor was not stopped.");
 }
 
 void acceptor::stop(const code&)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " acceptor::stop()";
+
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     mutex_.lock_upgrade();
@@ -78,12 +88,22 @@ void acceptor::stop(const code&)
 // private
 bool acceptor::stopped() const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " acceptor::stopped()";
+
     return stopped_;
 }
 
 // This is hardwired to listen on IPv6.
 code acceptor::listen(uint16_t )
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " acceptor::listen()";
+
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     mutex_.lock_upgrade();
@@ -121,6 +141,11 @@ code acceptor::listen(uint16_t )
 
 void acceptor::accept(accept_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " acceptor::accept()";
+
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     mutex_.lock_upgrade();
@@ -154,6 +179,11 @@ void acceptor::accept(accept_handler handler)
 void acceptor::handle_accept(const boost_code& ec, socket::ptr socket,
     accept_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " acceptor::handle_accept()";
+
     if (ec)
     {
         handler(error::boost_to_error_code(ec), nullptr);

@@ -66,6 +66,11 @@ proxy::proxy(threadpool& pool, socket::ptr socket, const settings& settings)
 
 proxy::~proxy()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " ~proxy()";
+    
     BITCOIN_ASSERT_MSG(stopped(), "The channel was not stopped.");
 }
 
@@ -74,16 +79,31 @@ proxy::~proxy()
 
 const config::authority& proxy::authority() const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::authority()";
+    
     return authority_;
 }
 
 uint32_t proxy::negotiated_version() const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::negotiated_version()";
+    
     return version_.load();
 }
 
 void proxy::set_negotiated_version(uint32_t value)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::set_negotiated_version()";
+    
     version_.store(value);
 }
 
@@ -92,6 +112,11 @@ void proxy::set_negotiated_version(uint32_t value)
 
 void proxy::start(result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::start()";
+    
     if (!stopped())
     {
         handler(error::operation_failed);
@@ -114,6 +139,11 @@ void proxy::start(result_handler handler)
 
 void proxy::subscribe_stop(result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::subscribe_stop()";
+    
     stop_subscriber_->subscribe(handler, error::channel_stopped);
 }
 
@@ -122,6 +152,11 @@ void proxy::subscribe_stop(result_handler handler)
 
 void proxy::read_heading()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::read_heading()";
+    
     if (stopped())
         return;
 
@@ -132,6 +167,11 @@ void proxy::read_heading()
 
 void proxy::handle_read_heading(const boost_code& ec, size_t)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::handle_read_heading()";
+    
     if (stopped())
         return;
 
@@ -179,6 +219,11 @@ void proxy::handle_read_heading(const boost_code& ec, size_t)
 
 void proxy::read_payload(const heading& head)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::read_payload()";
+    
     if (stopped())
         return;
 
@@ -193,6 +238,11 @@ void proxy::read_payload(const heading& head)
 void proxy::handle_read_payload(const boost_code& ec, size_t payload_size,
     const heading& head)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::handle_read_payload()";
+    
     if (stopped())
         return;
 
@@ -276,6 +326,11 @@ void proxy::handle_read_payload(const boost_code& ec, size_t payload_size,
 void proxy::do_send(command_ptr command, payload_ptr payload,
     result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::do_send()";
+    
     async_write(socket_->get(), buffer(*payload),
         std::bind(&proxy::handle_send,
             shared_from_this(), _1, _2, command, payload, handler));
@@ -284,6 +339,11 @@ void proxy::do_send(command_ptr command, payload_ptr payload,
 void proxy::handle_send(const boost_code& ec, size_t, command_ptr command,
     payload_ptr payload, result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::handle_send()";
+    
     dispatch_.unlock();
     const auto size = payload->size();
     const auto error = code(error::boost_to_error_code(ec));
@@ -320,6 +380,11 @@ void proxy::handle_send(const boost_code& ec, size_t, command_ptr command,
 // Instead this is thread safe and idempotent, allowing it to be unguarded.
 void proxy::stop(const code& ec)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::stop()";
+    
     BITCOIN_ASSERT_MSG(ec, "The stop code must be an error code.");
 
     stopped_ = true;
@@ -341,11 +406,21 @@ void proxy::stop(const code& ec)
 
 void proxy::stop(const boost_code& ec)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::stop()";
+    
     stop(error::boost_to_error_code(ec));
 }
 
 bool proxy::stopped() const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " proxy::stopped()";
+    
     return stopped_;
 }
 

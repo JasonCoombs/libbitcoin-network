@@ -47,6 +47,11 @@ session_inbound::session_inbound(p2p& network, bool notify_on_connect)
 
 void session_inbound::start(result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::start()";
+    
     if (settings_.inbound_port == 0 || settings_.inbound_connections == 0)
     {
         LOG_INFO(LOG_NETWORK)
@@ -64,6 +69,11 @@ void session_inbound::start(result_handler handler)
 
 void session_inbound::handle_started(const code& ec, result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handle_started()";
+    
     if (ec)
     {
         handler(ec);
@@ -94,6 +104,11 @@ void session_inbound::handle_started(const code& ec, result_handler handler)
 
 void session_inbound::handle_stop(const code& ec)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handle_stop()";
+    
     // Signal the stop of listener/accept attempt.
     acceptor_->stop(ec);
 }
@@ -103,6 +118,11 @@ void session_inbound::handle_stop(const code& ec)
 
 void session_inbound::start_accept(const code&)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::start_accept()";
+    
     if (stopped())
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -116,6 +136,11 @@ void session_inbound::start_accept(const code&)
 
 void session_inbound::handle_accept(const code& ec, channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handle_accept()";
+    
     if (stopped(ec))
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -159,6 +184,11 @@ void session_inbound::handle_accept(const code& ec, channel::ptr channel)
 void session_inbound::handle_channel_start(const code& ec,
     channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handle_channel_start()";
+    
     if (ec)
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -177,6 +207,11 @@ void session_inbound::handle_channel_start(const code& ec,
 
 void session_inbound::attach_protocols(channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::attach_protocols()";
+    
     const auto version = channel->negotiated_version();
 
     if (version >= message::version::level::bip31)
@@ -192,6 +227,11 @@ void session_inbound::attach_protocols(channel::ptr channel)
 
 void session_inbound::handle_channel_stop(const code& ec)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handle_channel_stop()";
+    
     LOG_DEBUG(LOG_NETWORK)
         << "Inbound channel stopped: " << ec.message();
 }
@@ -203,6 +243,11 @@ void session_inbound::handle_channel_stop(const code& ec)
 void session_inbound::handshake_complete(channel::ptr channel,
     result_handler handle_started)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_inbound::handshake_complete()";
+    
     if (pending(channel->peer_version()->nonce()))
     {
         LOG_DEBUG(LOG_NETWORK)

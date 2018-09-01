@@ -48,7 +48,7 @@ namespace network {
 
 template <class Message>
 using message_handler =
-    std::function<bool(const code&, std::shared_ptr<const Message>)>;
+    std::function<bool(const code&, std::shared_ptr<Message>)>;
 
 /// Aggregation of subscribers by messasge type, thread safe.
 class BCT_API message_subscriber
@@ -112,7 +112,12 @@ public:
     code relay(std::istream& stream, uint32_t version,
         Subscriber& subscriber) const
     {
-        const auto message = std::make_shared<Message>();
+        const auto this_id = boost::this_thread::get_id();
+        LOG_VERBOSE(LOG_NETWORK)
+        << this_id
+        << " message subscriber relay()";
+
+        auto message = std::make_shared<Message>();
 
         // Subscribers are invoked only with stop and success codes.
         if (!message->from_data(version, stream))
@@ -134,7 +139,12 @@ public:
     code handle(std::istream& stream, uint32_t version,
         Subscriber& subscriber) const
     {
-        const auto message = std::make_shared<Message>();
+        const auto this_id = boost::this_thread::get_id();
+        LOG_VERBOSE(LOG_NETWORK)
+        << this_id
+        << " message subscriber handle()";
+
+        auto message = std::make_shared<Message>();
 
         // Subscribers are invoked only with stop and success codes.
         if (!message->from_data(version, stream))
@@ -174,33 +184,33 @@ public:
     virtual void stop();
 
 private:
-    DEFINE_SUBSCRIBER_OVERLOAD(address)
-    DEFINE_SUBSCRIBER_OVERLOAD(alert)
-    DEFINE_SUBSCRIBER_OVERLOAD(block)
-    DEFINE_SUBSCRIBER_OVERLOAD(block_transactions)
-    DEFINE_SUBSCRIBER_OVERLOAD(compact_block)
-    DEFINE_SUBSCRIBER_OVERLOAD(fee_filter)
-    DEFINE_SUBSCRIBER_OVERLOAD(filter_add)
-    DEFINE_SUBSCRIBER_OVERLOAD(filter_clear)
-    DEFINE_SUBSCRIBER_OVERLOAD(filter_load)
-    DEFINE_SUBSCRIBER_OVERLOAD(get_address)
-    DEFINE_SUBSCRIBER_OVERLOAD(get_blocks)
-    DEFINE_SUBSCRIBER_OVERLOAD(get_block_transactions)
-    DEFINE_SUBSCRIBER_OVERLOAD(get_data)
-    DEFINE_SUBSCRIBER_OVERLOAD(get_headers)
-    DEFINE_SUBSCRIBER_OVERLOAD(headers)
-    DEFINE_SUBSCRIBER_OVERLOAD(inventory)
-    DEFINE_SUBSCRIBER_OVERLOAD(memory_pool)
-    DEFINE_SUBSCRIBER_OVERLOAD(merkle_block)
-    DEFINE_SUBSCRIBER_OVERLOAD(not_found)
-    DEFINE_SUBSCRIBER_OVERLOAD(ping)
-    DEFINE_SUBSCRIBER_OVERLOAD(pong)
-    DEFINE_SUBSCRIBER_OVERLOAD(reject)
-    DEFINE_SUBSCRIBER_OVERLOAD(send_compact)
-    DEFINE_SUBSCRIBER_OVERLOAD(send_headers)
-    DEFINE_SUBSCRIBER_OVERLOAD(transaction)
-    DEFINE_SUBSCRIBER_OVERLOAD(verack)
-    DEFINE_SUBSCRIBER_OVERLOAD(version)
+    DEFINE_SUBSCRIBER_OVERLOAD(address);
+    DEFINE_SUBSCRIBER_OVERLOAD(alert);
+    DEFINE_SUBSCRIBER_OVERLOAD(block);
+    DEFINE_SUBSCRIBER_OVERLOAD(block_transactions);
+    DEFINE_SUBSCRIBER_OVERLOAD(compact_block);
+    DEFINE_SUBSCRIBER_OVERLOAD(fee_filter);
+    DEFINE_SUBSCRIBER_OVERLOAD(filter_add);
+    DEFINE_SUBSCRIBER_OVERLOAD(filter_clear);
+    DEFINE_SUBSCRIBER_OVERLOAD(filter_load);
+    DEFINE_SUBSCRIBER_OVERLOAD(get_address);
+    DEFINE_SUBSCRIBER_OVERLOAD(get_blocks);
+    DEFINE_SUBSCRIBER_OVERLOAD(get_block_transactions);
+    DEFINE_SUBSCRIBER_OVERLOAD(get_data);
+    DEFINE_SUBSCRIBER_OVERLOAD(get_headers);
+    DEFINE_SUBSCRIBER_OVERLOAD(headers);
+    DEFINE_SUBSCRIBER_OVERLOAD(inventory);
+    DEFINE_SUBSCRIBER_OVERLOAD(memory_pool);
+    DEFINE_SUBSCRIBER_OVERLOAD(merkle_block);
+    DEFINE_SUBSCRIBER_OVERLOAD(not_found);
+    DEFINE_SUBSCRIBER_OVERLOAD(ping);
+    DEFINE_SUBSCRIBER_OVERLOAD(pong);
+    DEFINE_SUBSCRIBER_OVERLOAD(reject);
+    DEFINE_SUBSCRIBER_OVERLOAD(send_compact);
+    DEFINE_SUBSCRIBER_OVERLOAD(send_headers);
+    DEFINE_SUBSCRIBER_OVERLOAD(transaction);
+    DEFINE_SUBSCRIBER_OVERLOAD(verack);
+    DEFINE_SUBSCRIBER_OVERLOAD(version);
 
     DECLARE_SUBSCRIBER(address);
     DECLARE_SUBSCRIBER(alert);

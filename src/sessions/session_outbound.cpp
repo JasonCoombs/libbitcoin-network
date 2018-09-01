@@ -47,6 +47,11 @@ session_outbound::session_outbound(p2p& network, bool notify_on_connect)
 
 void session_outbound::start(result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::start()";
+    
     if (settings_.outbound_connections == 0)
     {
         LOG_INFO(LOG_NETWORK)
@@ -56,6 +61,12 @@ void session_outbound::start(result_handler handler)
     }
 
     LOG_INFO(LOG_NETWORK)
+    << "Starting outbound session: " << this_id;
+
+    LOG_INFO(LOG_NETWORK)
+    << "Starting outbound session: TEST";
+
+    LOG_INFO(LOG_NETWORK)
         << "Starting outbound session.";
 
     session::start(CONCURRENT_DELEGATE2(handle_started, _1, handler));
@@ -63,6 +74,11 @@ void session_outbound::start(result_handler handler)
 
 void session_outbound::handle_started(const code& ec, result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::handle_started()";
+    
     if (ec)
     {
         handler(ec);
@@ -81,6 +97,11 @@ void session_outbound::handle_started(const code& ec, result_handler handler)
 
 void session_outbound::new_connection(const code&)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::new_connection()";
+    
     if (stopped())
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -93,6 +114,11 @@ void session_outbound::new_connection(const code&)
 
 void session_outbound::handle_connect(const code& ec, channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::handle_connect()";
+    
     if (ec)
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -111,6 +137,11 @@ void session_outbound::handle_connect(const code& ec, channel::ptr channel)
 void session_outbound::handle_channel_start(const code& ec,
     channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::handle_channel_start()";
+    
     // The start failure is also caught by handle_channel_stop.
     if (ec)
     {
@@ -129,6 +160,11 @@ void session_outbound::handle_channel_start(const code& ec,
 
 void session_outbound::attach_protocols(channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::attach_protocols()";
+    
     const auto version = channel->negotiated_version();
 
     if (version >= message::version::level::bip31)
@@ -145,6 +181,11 @@ void session_outbound::attach_protocols(channel::ptr channel)
 void session_outbound::attach_handshake_protocols(channel::ptr channel,
     result_handler handle_started)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::attach_handshake_protocols()";
+    
     using serve = message::version::service;
     const auto relay = settings_.relay_transactions;
     const auto own_version = settings_.protocol_maximum;
@@ -171,6 +212,11 @@ void session_outbound::attach_handshake_protocols(channel::ptr channel,
 void session_outbound::handle_channel_stop(const code& ec,
     channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::handle_channel_stop()";
+    
     LOG_DEBUG(LOG_NETWORK)
         << "Outbound channel stopped [" << channel->authority() << "] "
         << ec.message();
@@ -185,6 +231,11 @@ void session_outbound::handle_channel_stop(const code& ec,
 void session_outbound::start_channel(channel::ptr channel,
     result_handler handle_started)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::start_channel()";
+    
     const result_handler unpend_handler =
         BIND3(do_unpend, _1, channel, handle_started);
 
@@ -202,6 +253,11 @@ void session_outbound::start_channel(channel::ptr channel,
 void session_outbound::do_unpend(const code& ec, channel::ptr channel,
     result_handler handle_started)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_outbound::do_unpend()";
+    
     unpend(channel);
     handle_started(ec);
 }
