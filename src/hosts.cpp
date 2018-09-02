@@ -45,11 +45,6 @@ hosts::hosts(const settings& settings)
 // private
 hosts::iterator hosts::find(const address& host)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::find()";
-    
     const auto found = [&host](const address& entry)
     {
         return entry.port() == host.port() && entry.ip() == host.ip();
@@ -60,11 +55,6 @@ hosts::iterator hosts::find(const address& host)
 
 size_t hosts::count() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::count()";
-    
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     shared_lock lock(mutex_);
@@ -75,11 +65,6 @@ size_t hosts::count() const
 
 code hosts::fetch(address& out) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::fetch() 1";
-    
     if (disabled_)
         return error::not_found;
 
@@ -103,11 +88,6 @@ code hosts::fetch(address& out) const
 
 code hosts::fetch(address::list& out) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::fetch() 2";
-    
     if (disabled_)
         return error::not_found;
 
@@ -144,11 +124,6 @@ code hosts::fetch(address::list& out) const
 // load
 code hosts::start()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::start()";
-    
     if (disabled_)
         return error::success;
 
@@ -200,11 +175,6 @@ code hosts::start()
 // load
 code hosts::stop()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::stop()";
-    
     if (disabled_)
         return error::success;
 
@@ -252,11 +222,6 @@ code hosts::stop()
 
 code hosts::remove(const address& host)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::remove()";
-    
     if (disabled_)
         return error::not_found;
 
@@ -292,11 +257,6 @@ code hosts::remove(const address& host)
 
 code hosts::store(const address& host)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::store() 1";
-    
     if (disabled_)
         return error::success;
 
@@ -343,11 +303,6 @@ code hosts::store(const address& host)
 
 void hosts::store(const address::list& hosts, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " hosts::store 2()";
-    
     if (disabled_ || hosts.empty())
     {
         handler(error::success);

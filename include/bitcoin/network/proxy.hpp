@@ -67,11 +67,6 @@ public:
     template <class Message>
     void subscribe(message_handler<Message>&& handler)
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " proxy subscribe()";
-
         message_subscriber_.subscribe<Message>(
             std::forward<message_handler<Message>>(handler));
     }

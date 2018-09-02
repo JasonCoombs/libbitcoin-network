@@ -37,11 +37,6 @@ using namespace std::placeholders;
 // Factory for deadline timer pointer construction.
 static deadline::ptr alarm(threadpool& pool, const asio::duration& duration)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " alarm()";
-
     return std::make_shared<deadline>(pool, pseudo_random::duration(duration));
 }
 
@@ -62,11 +57,6 @@ channel::channel(threadpool& pool, socket::ptr socket,
 // public:
 void channel::start(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::start()";
-
     proxy::start(
         std::bind(&channel::do_start,
             shared_from_base<channel>(), _1, handler));
@@ -75,11 +65,6 @@ void channel::start(result_handler handler)
 // Don't start the timers until the socket is enabled.
 void channel::do_start(const code& , result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::do_start()";
-
     start_expiration();
     start_inactivity();
     handler(error::success);
@@ -90,51 +75,26 @@ void channel::do_start(const code& , result_handler handler)
 
 bool channel::notify() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::notify()";
-
     return notify_;
 }
 
 void channel::set_notify(bool value)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::set_notify()";
-
     notify_ = value;
 }
 
 uint64_t channel::nonce() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::nonce()";
-
     return nonce_;
 }
 
 void channel::set_nonce(uint64_t value)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::set_nonce()";
-
     nonce_.store(value);
 }
 
 version_const_ptr channel::peer_version() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::peer_version()";
-
     const auto version = peer_version_.load();
     BITCOIN_ASSERT_MSG(version, "Read peer version before set.");
     return version;
@@ -142,11 +102,6 @@ version_const_ptr channel::peer_version() const
 
 void channel::set_peer_version(version_const_ptr value)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::set_peer_version()";
-
     peer_version_.store(value);
 }
 
@@ -156,32 +111,17 @@ void channel::set_peer_version(version_const_ptr value)
 // It is possible that this may be called multiple times.
 void channel::handle_stopping()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::handle_stopping()";
-
     expiration_->stop();
     inactivity_->stop();
 }
 
 void channel::signal_activity()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::signal_activity()";
-
     start_inactivity();
 }
 
 bool channel::stopped(const code& ec) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::stopped()";
-
     return proxy::stopped() || ec == error::channel_stopped ||
         ec == error::service_stopped;
 }
@@ -191,11 +131,6 @@ bool channel::stopped(const code& ec) const
 
 void channel::start_expiration()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::start_expiration()";
-
     if (proxy::stopped())
         return;
 
@@ -206,11 +141,6 @@ void channel::start_expiration()
 
 void channel::handle_expiration(const code& ec)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::handle_expiration()";
-
     if (stopped(ec))
         return;
 
@@ -222,11 +152,6 @@ void channel::handle_expiration(const code& ec)
 
 void channel::start_inactivity()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::start_inactivity()";
-
     if (proxy::stopped())
         return;
 
@@ -237,11 +162,6 @@ void channel::start_inactivity()
 
 void channel::handle_inactivity(const code& ec)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " channel::handle_inactivity()";
-
     if (stopped(ec))
         return;
 

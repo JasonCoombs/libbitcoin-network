@@ -51,11 +51,6 @@ session_seed::session_seed(p2p& network)
 
 void session_seed::start(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::start()";
-    
     if (settings_.host_pool_capacity == 0)
     {
         LOG_INFO(LOG_NETWORK)
@@ -69,11 +64,6 @@ void session_seed::start(result_handler handler)
 
 void session_seed::handle_started(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::handle_started()";
-    
     if (ec)
     {
         handler(ec);
@@ -107,11 +97,6 @@ void session_seed::handle_started(const code& ec, result_handler handler)
 void session_seed::attach_handshake_protocols(channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::attach_handshake_protocols()";
-    
     // Don't use configured services or relay for seeding.
     const auto relay = false;
     const auto own_version = settings_.protocol_maximum;
@@ -137,11 +122,6 @@ void session_seed::attach_handshake_protocols(channel::ptr channel,
 
 void session_seed::start_seeding(size_t start_size, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::start_seeding()";
-    
     const auto complete = BIND2(handle_complete, start_size, handler);
 
     const auto join_handler = synchronize(complete, settings_.seeds.size(),
@@ -155,11 +135,6 @@ void session_seed::start_seeding(size_t start_size, result_handler handler)
 void session_seed::start_seed(const config::endpoint& seed,
     result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::start_seed()";
-    
     if (stopped())
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -183,11 +158,6 @@ void session_seed::handle_connect(const code& ec, channel::ptr channel,
     const config::endpoint& seed, connector::ptr connector,
     result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::handle_connect()";
-    
     unpend(connector);
 
     if (ec)
@@ -218,11 +188,6 @@ void session_seed::handle_connect(const code& ec, channel::ptr channel,
 void session_seed::handle_channel_start(const code& ec, channel::ptr channel,
     result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::handle_channel_start()";
-    
     if (ec)
     {
         handler(ec);
@@ -235,11 +200,6 @@ void session_seed::handle_channel_start(const code& ec, channel::ptr channel,
 void session_seed::attach_protocols(channel::ptr channel,
     result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::attach_protocols()";
-    
     const auto version = channel->negotiated_version();
 
     if (version >= message::version::level::bip31)
@@ -255,11 +215,6 @@ void session_seed::attach_protocols(channel::ptr channel,
 
 void session_seed::handle_channel_stop(const code& ec)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::handle_channel_stop()";
-    
     LOG_DEBUG(LOG_NETWORK)
         << "Seed channel stopped: " << ec.message();
 }
@@ -267,11 +222,6 @@ void session_seed::handle_channel_stop(const code& ec)
 // This accepts no error code because individual seed errors are suppressed.
 void session_seed::handle_complete(size_t start_size, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_seed::handle_complete()";
-    
     // We succeed only if there is a host count increase of at least 100.
     const auto increase = address_count() >=
         ceiling_add(start_size, minimum_host_increase);

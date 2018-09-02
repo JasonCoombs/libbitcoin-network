@@ -113,7 +113,7 @@ public:
     // ------------------------------------------------------------------------
 
     /// Network configuration settings.
-    const virtual settings& network_settings() const;
+    virtual const settings& network_settings() const;
 
     /// Return the current top block identity.
     virtual config::checkpoint top_block() const;
@@ -225,10 +225,6 @@ protected:
     template <class Session, typename... Args>
     typename Session::ptr attach(Args&&... args)
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " p2p attach()";
         return std::make_shared<Session>(*this, std::forward<Args>(args)...);
     }
 

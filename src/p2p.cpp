@@ -53,11 +53,6 @@ using namespace std::placeholders;
 // This can be exceeded due to manual connection calls and race conditions.
 inline size_t nominal_connecting(const settings& settings)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " nominal_connecting()";
-    
     return settings.peers.size() + settings.connect_batch_size *
         settings.outbound_connections;
 }
@@ -65,11 +60,6 @@ inline size_t nominal_connecting(const settings& settings)
 // This can be exceeded due to manual connection calls and race conditions.
 inline size_t nominal_connected(const settings& settings)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " nominal_connected()";
-    
     return settings.peers.size() + settings.outbound_connections +
         settings.inbound_connections;
 }
@@ -93,11 +83,6 @@ p2p::p2p(const settings& settings)
 // This allows for shutdown based on destruct without need to call stop.
 p2p::~p2p()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " ~p2p()";
-    
     p2p::close();
 }
 
@@ -106,11 +91,6 @@ p2p::~p2p()
 
 void p2p::start(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::start()";
-    
     if (!stopped())
     {
         handler(error::operation_failed);
@@ -136,11 +116,6 @@ void p2p::start(result_handler handler)
 
 void p2p::handle_manual_started(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_manual_started()";
-    
     if (stopped())
     {
         handler(error::service_stopped);
@@ -160,11 +135,6 @@ void p2p::handle_manual_started(const code& ec, result_handler handler)
 
 void p2p::handle_hosts_loaded(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_hosts_loaded()";
-    
     if (stopped())
     {
         handler(error::service_stopped);
@@ -190,11 +160,6 @@ void p2p::handle_hosts_loaded(const code& ec, result_handler handler)
 
 void p2p::handle_started(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_started()";
-    
     if (stopped())
     {
         handler(error::service_stopped);
@@ -223,11 +188,6 @@ void p2p::handle_started(const code& ec, result_handler handler)
 
 void p2p::run(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::run()";
-    
     // Start node.peer persistent connections.
     for (const auto& peer: settings_.peers)
         connect(peer);
@@ -243,11 +203,6 @@ void p2p::run(result_handler handler)
 
 void p2p::handle_inbound_started(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_inbound_started()";
-    
     if (ec)
     {
         LOG_ERROR(LOG_NETWORK)
@@ -267,11 +222,6 @@ void p2p::handle_inbound_started(const code& ec, result_handler handler)
 
 void p2p::handle_running(const code& ec, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_running()";
-    
     if (ec)
     {
         LOG_ERROR(LOG_NETWORK)
@@ -290,41 +240,21 @@ void p2p::handle_running(const code& ec, result_handler handler)
 
 session_seed::ptr p2p::attach_seed_session()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::attach_seed_session()";
-    
     return attach<session_seed>();
 }
 
 session_manual::ptr p2p::attach_manual_session()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::attach_manual_session()";
-    
     return attach<session_manual>(true);
 }
 
 session_inbound::ptr p2p::attach_inbound_session()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::attach_inbound_session()";
-    
     return attach<session_inbound>(true);
 }
 
 session_outbound::ptr p2p::attach_outbound_session()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::attach_outbound_session()";
-    
     return attach<session_outbound>(true);
 }
 
@@ -339,11 +269,6 @@ session_outbound::ptr p2p::attach_outbound_session()
 // is thread safe and idempotent, allowing it to be unguarded.
 bool p2p::stop()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::stop()";
-    
     // This is the only stop operation that can fail.
     const auto result = (hosts_.stop() == error::success);
 
@@ -372,11 +297,6 @@ bool p2p::stop()
 // This must be called from the thread that constructed this class (see join).
 bool p2p::close()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::close()";
-    
     // Signal current work to stop and threadpool to stop accepting new work.
     const auto result = p2p::stop();
 
@@ -390,91 +310,46 @@ bool p2p::close()
 
 const settings& p2p::network_settings() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::network_settings()";
-    
     return settings_;
 }
 
 checkpoint p2p::top_block() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::top_block()";
-    
     return top_block_.load();
 }
 
 void p2p::set_top_block(checkpoint&& top)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::set_top_block() 1";
-    
     top_block_.store(std::move(top));
 }
 
 void p2p::set_top_block(const checkpoint& top)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::set_top_block() 2";
-    
     top_block_.store(top);
 }
 
 checkpoint p2p::top_header() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::top_header()";
-    
     return top_header_.load();
 }
 
 void p2p::set_top_header(checkpoint&& top)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::set_top_header() 1";
-    
     top_header_.store(std::move(top));
 }
 
 void p2p::set_top_header(const checkpoint& top)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::set_top_header() 2";
-    
     top_header_.store(top);
 }
 
 bool p2p::stopped() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::stopped()";
-    
     return stopped_;
 }
 
 threadpool& p2p::thread_pool()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::thread_pool()";
-    
     return threadpool_;
 }
 
@@ -485,11 +360,6 @@ threadpool& p2p::thread_pool()
 void p2p::handle_send(const code& ec, channel::ptr channel,
     channel_handler handle_channel, result_handler handle_complete)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::handle_send()";
-    
     handle_channel(ec, channel);
     handle_complete(ec);
 }
@@ -499,21 +369,11 @@ void p2p::handle_send(const code& ec, channel::ptr channel,
 
 void p2p::subscribe_connection(connect_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::subscribe_connection()";
-    
     channel_subscriber_->subscribe(handler, error::service_stopped, {});
 }
 
 void p2p::subscribe_stop(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::subscribe_stop()";
-    
     stop_subscriber_->subscribe(handler, error::service_stopped);
 }
 
@@ -522,21 +382,11 @@ void p2p::subscribe_stop(result_handler handler)
 
 void p2p::connect(const config::endpoint& peer)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::connect() 1";
-    
     connect(peer.host(), peer.port());
 }
 
 void p2p::connect(const std::string& hostname, uint16_t port)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::connect() 2";
-    
     if (stopped())
         return;
 
@@ -550,11 +400,6 @@ void p2p::connect(const std::string& hostname, uint16_t port)
 void p2p::connect(const std::string& hostname, uint16_t port,
     channel_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::connect 3()";
-    
     if (stopped())
     {
         handler(error::service_stopped, {});
@@ -572,62 +417,32 @@ void p2p::connect(const std::string& hostname, uint16_t port,
 
 size_t p2p::address_count() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::address_count()";
-    
     return hosts_.count();
 }
 
 code p2p::store(const address& address)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::store() 1";
-    
     return hosts_.store(address);
 }
 
 void p2p::store(const address::list& addresses, result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::store() 2";
-    
     // Store is invoked on a new thread.
     hosts_.store(addresses, handler);
 }
 
 code p2p::fetch_address(address& out_address) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::fetch_address()";
-    
     return hosts_.fetch(out_address);
 }
 
 code p2p::fetch_addresses(address::list& out_addresses) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::fetch_addresses()";
-    
     return hosts_.fetch(out_addresses);
 }
 
 code p2p::remove(const address& address)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::remove()";
-    
     return hosts_.remove(address);
 }
 
@@ -636,21 +451,11 @@ code p2p::remove(const address& address)
 
 code p2p::pend(connector::ptr connector)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::pend() 1";
-    
     return pending_connect_.store(connector);
 }
 
 void p2p::unpend(connector::ptr connector)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::unpend() 1";
-    
     connector->stop(error::success);
     pending_connect_.remove(connector);
 }
@@ -660,31 +465,16 @@ void p2p::unpend(connector::ptr connector)
 
 code p2p::pend(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::pend() 2";
-    
     return pending_handshake_.store(channel);
 }
 
 void p2p::unpend(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::unpend() 2";
-    
     pending_handshake_.remove(channel);
 }
 
 bool p2p::pending(uint64_t version_nonce) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::pending()";
-    
     const auto match = [version_nonce](const channel::ptr& element)
     {
         return element->nonce() == version_nonce;
@@ -698,21 +488,11 @@ bool p2p::pending(uint64_t version_nonce) const
 
 size_t p2p::connection_count() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::connection_count()";
-    
     return pending_close_.size();
 }
 
 bool p2p::connected(const address& address) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::connected()";
-    
     const auto match = [&address](const channel::ptr& element)
     {
         return element->authority() == address;
@@ -723,11 +503,6 @@ bool p2p::connected(const address& address) const
 
 code p2p::store(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::store()";
-    
     const auto address = channel->authority();
     const auto match = [&address](const channel::ptr& element)
     {
@@ -745,11 +520,6 @@ code p2p::store(channel::ptr channel)
 
 void p2p::remove(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " p2p::remove()";
-    
     pending_close_.remove(channel);
 }
 

@@ -53,11 +53,6 @@ session::session(p2p& network, bool notify_on_connect)
 
 session::~session()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " ~session()";
-    
     BITCOIN_ASSERT_MSG(stopped(), "The session was not stopped.");
 }
 
@@ -67,41 +62,21 @@ session::~session()
 
 size_t session::address_count() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::address_count()";
-    
     return network_.address_count();
 }
 
 size_t session::connection_count() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::connection_count()";
-    
     return network_.connection_count();
 }
 
 code session::fetch_address(address& out_address) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::fetch_address()";
-    
     return network_.fetch_address(out_address);
 }
 
 bool session::blacklisted(const authority& authority) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::blacklisted()";
-    
     const auto ip_compare = [&](const config::authority& blocked)
     {
         return authority.ip() == blocked.ip();
@@ -113,21 +88,11 @@ bool session::blacklisted(const authority& authority) const
 
 bool session::stopped() const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::stopped() 1";
-    
     return stopped_;
 }
 
 bool session::stopped(const code& ec) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::stopped() 2";
-    
     return stopped() || ec == error::service_stopped;
 }
 
@@ -136,21 +101,11 @@ bool session::stopped(const code& ec) const
 
 acceptor::ptr session::create_acceptor()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::create_acceptor()";
-    
     return std::make_shared<acceptor>(pool_, settings_);
 }
 
 connector::ptr session::create_connector()
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::create_connector()";
-    
     return std::make_shared<connector>(pool_, settings_);
 }
 
@@ -159,21 +114,11 @@ connector::ptr session::create_connector()
 
 code session::pend(connector::ptr connector)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::pend()";
-    
     return network_.pend(connector);
 }
 
 void session::unpend(connector::ptr connector)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::unpend()";
-    
     network_.unpend(connector);
 }
 
@@ -182,31 +127,16 @@ void session::unpend(connector::ptr connector)
 
 code session::pend(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::pend()";
-    
     return network_.pend(channel);
 }
 
 void session::unpend(channel::ptr channel)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::unpend()";
-    
     network_.unpend(channel);
 }
 
 bool session::pending(uint64_t version_nonce) const
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::pending()";
-    
     return network_.pending(version_nonce);
 }
 
@@ -216,11 +146,6 @@ bool session::pending(uint64_t version_nonce) const
 
 void session::start(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::start()";
-    
     if (!stopped())
     {
         handler(error::operation_failed);
@@ -236,11 +161,6 @@ void session::start(result_handler handler)
 
 void session::handle_stop(const code& )
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handle_stop()";
-    
     // This signals the session to stop creating connections, but does not
     // close the session. Channels stop, resulting in session loss of scope.
     stopped_ = true;
@@ -251,11 +171,6 @@ void session::handle_stop(const code& )
 
 void session::subscribe_stop(result_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::subscribe_stop()";
-    
     network_.subscribe_stop(handler);
 }
 
@@ -266,11 +181,6 @@ void session::subscribe_stop(result_handler handler)
 void session::register_channel(channel::ptr channel,
     result_handler handle_started, result_handler handle_stopped)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::register_channel()";
-    
     if (stopped())
     {
         handle_started(error::service_stopped);
@@ -285,11 +195,6 @@ void session::register_channel(channel::ptr channel,
 void session::start_channel(channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::start_channel()";
-    
     channel->set_notify(notify_on_connect_);
     channel->set_nonce(pseudo_random::next(1, max_uint64));
 
@@ -301,11 +206,6 @@ void session::start_channel(channel::ptr channel,
 void session::handle_starting(const code& ec, channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handle_starting()";
-    
     if (ec)
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -322,11 +222,6 @@ void session::handle_starting(const code& ec, channel::ptr channel,
 void session::attach_handshake_protocols(channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::attach_handshake_protocols()";
-    
     // Reject messages are not handled until bip61 (70002).
     // The negotiated_version is initialized to the configured maximum.
     if (channel->negotiated_version() >= message::version::level::bip61)
@@ -338,11 +233,6 @@ void session::attach_handshake_protocols(channel::ptr channel,
 void session::handle_handshake(const code& ec, channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handle_handshake()";
-    
     if (ec)
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -359,11 +249,6 @@ void session::handle_handshake(const code& ec, channel::ptr channel,
 void session::handshake_complete(channel::ptr channel,
     result_handler handle_started)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handshake_complete()";
-    
     // This will fail if the IP address or nonce is already connected.
     handle_started(network_.store(channel));
 }
@@ -371,11 +256,6 @@ void session::handshake_complete(channel::ptr channel,
 void session::handle_start(const code& ec, channel::ptr channel,
     result_handler handle_started, result_handler handle_stopped)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handle_start()";
-    
     // Must either stop or subscribe the channel for stop before returning.
     // All closures must eventually be invoked as otherwise it is a leak.
     // Therefore upon start failure expect start failure and stop callbacks.
@@ -397,11 +277,6 @@ void session::handle_start(const code& ec, channel::ptr channel,
 void session::handle_remove(const code& , channel::ptr channel,
     result_handler handle_stopped)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session::handle_remove()";
-    
     network_.remove(channel);
     handle_stopped(error::success);
 }

@@ -86,11 +86,6 @@ protected:
     template <class Protocol, typename... Args>
     typename Protocol::ptr attach(channel::ptr channel, Args&&... args)
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " session attach()";
-
         return std::make_shared<Protocol>(network_, channel,
             std::forward<Args>(args)...);
     }
@@ -100,11 +95,6 @@ protected:
     auto bind(Handler&& handler, Args&&... args) ->
         decltype(BOUND_SESSION_TYPE(handler, args)) const
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " session bind()";
-
         return BOUND_SESSION(handler, args);
     }
 
@@ -113,11 +103,6 @@ protected:
     auto concurrent_delegate(Handler&& handler, Args&&... args) ->
         delegates::concurrent<decltype(BOUND_SESSION_TYPE(handler, args))> const
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " session concurrent_delegate()";
-
         return dispatch_.concurrent_delegate(SESSION_ARGS(handler, args));
     }
 
@@ -125,22 +110,12 @@ protected:
     inline void dispatch_delayed(const asio::duration& delay,
         dispatcher::delay_handler handler) const
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " session dispatch_delayed()";
-
         dispatch_.delayed(delay, handler);
     }
 
     /// Delay timing for a tight failure loop, based on configured timeout.
     inline asio::duration cycle_delay(const code& ec)
     {
-        const auto this_id = boost::this_thread::get_id();
-        LOG_VERBOSE(LOG_NETWORK)
-        << this_id
-        << " session cycle_delay()";
-
         return (ec == error::channel_timeout || ec == error::service_stopped ||
             ec == error::success) ? asio::seconds(0) :
             settings_.connect_timeout();

@@ -46,11 +46,6 @@ session_batch::session_batch(p2p& network, bool notify_on_connect)
 // protected:
 void session_batch::connect(channel_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_batch::connect()";
-    
     const auto join_handler = synchronize(handler, batch_size_, NAME "_join",
         synchronizer_terminate::on_success);
 
@@ -60,11 +55,6 @@ void session_batch::connect(channel_handler handler)
 
 void session_batch::new_connect(channel_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_batch::new_connect()";
-    
     if (stopped())
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -81,11 +71,6 @@ void session_batch::new_connect(channel_handler handler)
 void session_batch::start_connect(const code& ec, const authority& host,
     channel_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_batch::start_connect()";
-    
     if (stopped(ec))
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -126,11 +111,6 @@ void session_batch::start_connect(const code& ec, const authority& host,
 void session_batch::handle_connect(const code& ec, channel::ptr channel,
     connector::ptr connector, channel_handler handler)
 {
-    const auto this_id = boost::this_thread::get_id();
-    LOG_VERBOSE(LOG_NETWORK)
-    << this_id
-    << " session_batch::handle_connect()";
-    
     unpend(connector);
 
     if (ec)
