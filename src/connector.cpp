@@ -48,11 +48,21 @@ connector::connector(threadpool& pool, const settings& settings)
 
 connector::~connector()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " ~connector()";
+
     BITCOIN_ASSERT_MSG(stopped(), "The connector was not stopped.");
 }
 
 void connector::stop(const code&)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::stop()";
+
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     mutex_.lock_upgrade();
@@ -81,22 +91,42 @@ void connector::stop(const code&)
 // private
 bool connector::stopped() const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::stopped()";
+    
     return stopped_;
 }
 
 void connector::connect(const endpoint& endpoint, connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::connect() 1";
+    
     connect(endpoint.host(), endpoint.port(), handler);
 }
 
 void connector::connect(const authority& authority, connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::connect() 2";
+    
     connect(authority.to_hostname(), authority.port(), handler);
 }
 
 void connector::connect(const std::string& hostname, uint16_t port,
     connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::connect() 3";
+    
     // Critical Section
     ///////////////////////////////////////////////////////////////////////////
     mutex_.lock_upgrade();
@@ -126,6 +156,11 @@ void connector::connect(const std::string& hostname, uint16_t port,
 void connector::handle_resolve(const boost_code& ec, asio::iterator iterator,
     connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::handle_resolve()";
+    
     using namespace boost::asio;
 
     // Critical Section
@@ -174,6 +209,11 @@ void connector::handle_resolve(const boost_code& ec, asio::iterator iterator,
 void connector::handle_connect(const boost_code& ec, asio::iterator,
     socket::ptr socket, connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::handle_connect()";
+    
     if (ec)
     {
         handler(error::boost_to_error_code(ec), nullptr);
@@ -189,6 +229,11 @@ void connector::handle_connect(const boost_code& ec, asio::iterator,
 void connector::handle_timer(const code& ec, socket::ptr ,
     connect_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " connector::handle_timer()";
+    
     handler(ec ? ec : error::channel_timeout, nullptr);
 }
 

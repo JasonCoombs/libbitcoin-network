@@ -83,6 +83,11 @@ message_subscriber::message_subscriber(threadpool& pool)
 
 void message_subscriber::broadcast(const code& ec)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " message_subscriber::broadcast()";
+    
     RELAY_CODE(ec, address);
     RELAY_CODE(ec, alert);
     RELAY_CODE(ec, block);
@@ -115,6 +120,11 @@ void message_subscriber::broadcast(const code& ec)
 code message_subscriber::load(message_type type, uint32_t version,
     std::istream& stream) const
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " message_subscriber::load()";
+    
     switch (type)
     {
         CASE_RELAY_MESSAGE(stream, version, address);
@@ -152,6 +162,11 @@ code message_subscriber::load(message_type type, uint32_t version,
 
 void message_subscriber::start()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " message_subscriber::start()";
+    
     START_SUBSCRIBER(address);
     START_SUBSCRIBER(alert);
     START_SUBSCRIBER(block);
@@ -183,6 +198,11 @@ void message_subscriber::start()
 
 void message_subscriber::stop()
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " message_subscriber::stop()";
+    
     STOP_SUBSCRIBER(address);
     STOP_SUBSCRIBER(alert);
     STOP_SUBSCRIBER(block);

@@ -72,7 +72,7 @@ void protocol_ping_60001::send_ping(const code& ec)
     SEND2(ping{ nonce }, handle_send_ping, _1, ping::command);
 }
 
-void protocol_ping_60001::handle_send_ping(const code& ec, const std::string&)
+void protocol_ping_60001::handle_send_ping(const code& ec, std::string&)
 {
     if (stopped(ec))
         return;

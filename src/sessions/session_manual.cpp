@@ -49,6 +49,11 @@ session_manual::session_manual(p2p& network, bool notify_on_connect)
 
 void session_manual::start(result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::start()";
+    
     LOG_INFO(LOG_NETWORK)
         << "Starting manual session.";
 
@@ -57,6 +62,11 @@ void session_manual::start(result_handler handler)
 
 void session_manual::handle_started(const code& ec, result_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::handle_started()";
+    
     if (ec)
     {
         handler(ec);
@@ -72,6 +82,11 @@ void session_manual::handle_started(const code& ec, result_handler handler)
 
 void session_manual::connect(const std::string& hostname, uint16_t port)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::connect() 1";
+    
     const auto unhandled = [](code, channel::ptr) {};
     connect(hostname, port, unhandled);
 }
@@ -79,6 +94,11 @@ void session_manual::connect(const std::string& hostname, uint16_t port)
 void session_manual::connect(const std::string& hostname, uint16_t port,
     channel_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::connect() 2";
+    
     start_connect(error::success, hostname, port,
         settings_.manual_attempt_limit, handler);
 }
@@ -87,6 +107,11 @@ void session_manual::connect(const std::string& hostname, uint16_t port,
 void session_manual::start_connect(const code&, const std::string& hostname,
     uint16_t port, uint32_t attempts, channel_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::start_connect()";
+    
     if (stopped())
     {
         LOG_DEBUG(LOG_NETWORK)
@@ -110,6 +135,11 @@ void session_manual::handle_connect(const code& ec, channel::ptr channel,
     const std::string& hostname, uint16_t port, uint32_t remaining,
     connector::ptr connector, channel_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::handle_connect()";
+    
     unpend(connector);
 
     if (ec)
@@ -148,6 +178,11 @@ void session_manual::handle_channel_start(const code& ec,
     const std::string& hostname, uint16_t port, channel::ptr channel,
     channel_handler handler)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::handle_channel_start()";
+    
     // The start failure is also caught by handle_channel_stop.
     // Treat a start failure like a stop, but preserve the start handler.
     if (ec)
@@ -170,6 +205,11 @@ void session_manual::handle_channel_start(const code& ec,
 
 void session_manual::attach_protocols(channel::ptr channel)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::attach_protocols()";
+    
     const auto version = channel->negotiated_version();
 
     if (version >= message::version::level::bip31)
@@ -186,6 +226,11 @@ void session_manual::attach_protocols(channel::ptr channel)
 void session_manual::handle_channel_stop(const code& ec,
     const std::string& hostname, uint16_t port)
 {
+    const auto this_id = boost::this_thread::get_id();
+    LOG_VERBOSE(LOG_NETWORK)
+    << this_id
+    << " session_manual::handle_channel_stop()";
+    
     LOG_DEBUG(LOG_NETWORK)
         << "Manual channel stopped: " << ec.message();
 
