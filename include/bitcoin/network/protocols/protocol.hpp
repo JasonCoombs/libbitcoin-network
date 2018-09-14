@@ -61,7 +61,7 @@ protected:
     /// Bind a method in the derived class.
     template <class Protocol, typename Handler, typename... Args>
     auto bind(Handler&& handler, Args&&... args) ->
-        decltype(BOUND_PROTOCOL_TYPE(handler, args)) const
+        decltype(BOUND_PROTOCOL_TYPE(handler, args))
     {
         return BOUND_PROTOCOL(handler, args);
     }
@@ -121,7 +121,7 @@ protected:
     virtual void stop(const code& ec);
 
 protected:
-    void handle_send(const code& ec, const std::string& command);
+    void handle_send(const code& ec,  std::string& command);
 
 private:
     threadpool& pool_;

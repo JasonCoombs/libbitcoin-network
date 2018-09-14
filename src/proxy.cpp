@@ -312,6 +312,8 @@ void proxy::handle_send(const boost_code& ec, size_t, command_ptr command,
 // Instead this is thread safe and idempotent, allowing it to be unguarded.
 void proxy::stop(const code& ec)
 {
+    LOG_VERBOSE(LOG_NETWORK)
+    << "Starting proxy::stop()";
     BITCOIN_ASSERT_MSG(ec, "The stop code must be an error code.");
 
     stopped_ = true;
@@ -329,6 +331,8 @@ void proxy::stop(const code& ec)
 
     // Signal socket to stop reading and accepting new work.
     socket_->stop();
+    LOG_VERBOSE(LOG_NETWORK)
+    << "Ending proxy::stop()";
 }
 
 void proxy::stop(const boost_code& ec)

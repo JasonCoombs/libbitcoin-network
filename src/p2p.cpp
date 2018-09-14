@@ -269,6 +269,9 @@ session_outbound::ptr p2p::attach_outbound_session()
 // is thread safe and idempotent, allowing it to be unguarded.
 bool p2p::stop()
 {
+    LOG_DEBUG(LOG_NETWORK)
+    << "p2p::stop()";
+
     // This is the only stop operation that can fail.
     const auto result = (hosts_.stop() == error::success);
 
@@ -277,19 +280,47 @@ bool p2p::stop()
     manual_.store({});
 
     // Prevent subscription after stop.
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling stop_subscriber_->stop()";
+
     stop_subscriber_->stop();
+
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling stop_subscriber_->invoke(error::service_stopped)";
+
     stop_subscriber_->invoke(error::service_stopped);
 
     // Prevent subscription after stop.
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling channel_subscriber_->stop()";
+
     channel_subscriber_->stop();
+
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling channel_subscriber_->invoke(error::service_stopped)";
+
     channel_subscriber_->invoke(error::service_stopped, {});
 
     // Stop creating new channels and stop those that exist (self-clearing).
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling pending_connect_->stop(error::service_stopped)";
+
     pending_connect_.stop(error::service_stopped);
+
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling pending_handshake_->stop(error::service_stopped)";
+
     pending_handshake_.stop(error::service_stopped);
+
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling pending_close_->stop(error::service_stopped)";
+
     pending_close_.stop(error::service_stopped);
 
     // Signal threadpool to stop accepting work now that subscribers are clear.
+    LOG_DEBUG(LOG_NETWORK)
+    << "calling threadpool_->shutdown()";
+
     threadpool_.shutdown();
     return result;
 }

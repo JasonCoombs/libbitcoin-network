@@ -48,7 +48,7 @@ namespace network {
 
 template <class Message>
 using message_handler =
-    std::function<bool(const code&, std::shared_ptr<const Message>)>;
+    std::function<bool(const code&, std::shared_ptr<Message>)>;
 
 /// Aggregation of subscribers by messasge type, thread safe.
 class BCT_API message_subscriber
@@ -112,7 +112,12 @@ public:
     code relay(std::istream& stream, uint32_t version,
         Subscriber& subscriber) const
     {
-        const auto message = std::make_shared<Message>();
+        const auto this_id = boost::this_thread::get_id();
+        LOG_VERBOSE(LOG_NETWORK)
+        << this_id
+        << " message subscriber relay()";
+        
+         auto message = std::make_shared<Message>();
 
         // Subscribers are invoked only with stop and success codes.
         if (!message->from_data(version, stream))
@@ -134,7 +139,11 @@ public:
     code handle(std::istream& stream, uint32_t version,
         Subscriber& subscriber) const
     {
-        const auto message = std::make_shared<Message>();
+        const auto this_id = boost::this_thread::get_id();
+        LOG_VERBOSE(LOG_NETWORK)
+        << this_id
+        << " message subscriber handle()";
+         auto message = std::make_shared<Message>();
 
         // Subscribers are invoked only with stop and success codes.
         if (!message->from_data(version, stream))

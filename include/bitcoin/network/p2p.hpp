@@ -225,6 +225,10 @@ protected:
     template <class Session, typename... Args>
     typename Session::ptr attach(Args&&... args)
     {
+        const auto this_id = boost::this_thread::get_id();
+        LOG_VERBOSE(LOG_NETWORK)
+        << this_id
+        << " p2p attach()";
         return std::make_shared<Session>(*this, std::forward<Args>(args)...);
     }
 
