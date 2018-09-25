@@ -47,13 +47,13 @@ settings::settings()
     channel_inactivity_minutes(10),
     channel_expiration_minutes(1440),
     host_pool_capacity(0),
-    hosts_file("hosts.cache"),
     self(unspecified_network_address),
 
     // [log]
     debug_file("debug.log"),
     error_file("error.log"),
     archive_directory("archive"),
+    hosts_file("hosts.cache"),
     rotation_size(0),
     minimum_free_space(0),
     maximum_archive_size(0),
@@ -63,16 +63,23 @@ settings::settings()
 {
 }
 
-// Use push_back due to initializer_list bug:
+// This parameterized constructor also delegates to a target, the default initializing constructor
+// https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/introduction_to_the_c_11_feature_delegating_constructors
+// https://en.cppreference.com/w/cpp/language/default_constructor
+// https://en.cppreference.com/w/cpp/language/initializer_list
+
+// Use push_back for any vectors due to initializer_list bug:
 // stackoverflow.com/a/20168627/1172329
+// https://en.cppreference.com/w/cpp/container/vector/push_back
 settings::settings(config::settings context)
   : settings()
 {
-    // Handle deviations from common defaults.
+    // Handle deviations from common defaults; override defaults after the initializing constructor.
     switch (context)
     {
         case config::settings::mainnet:
         {
+            hosts_file = "hosts-node.cache";
             identifier = 3652501241;
             inbound_port = 8333;
             seeds.reserve(4);
@@ -85,6 +92,7 @@ settings::settings(config::settings context)
 
         case config::settings::testnet:
         {
+            hosts_file = "testnet-hosts-node.cache";
             identifier = 118034699;
             inbound_port = 18333;
             seeds.reserve(4);
@@ -97,9 +105,46 @@ settings::settings(config::settings context)
 
         case config::settings::regtest:
         {
+            hosts_file = "regtest-hosts-node.cache";
             identifier = 3669344250;
             inbound_port = 18444;
 
+            // Regtest is private network only, so there is no seeding.
+            break;
+        }
+            
+        case config::settings::mainnet_server:
+        {
+            hosts_file = "hosts-server.cache";
+            identifier = 3652501241;
+            inbound_port = 8333;
+            seeds.reserve(4);
+            seeds.push_back({ "mainnet1.libbitcoin.net", 8333 });
+            seeds.push_back({ "mainnet2.libbitcoin.net", 8333 });
+            seeds.push_back({ "mainnet3.libbitcoin.net", 8333 });
+            seeds.push_back({ "mainnet4.libbitcoin.net", 8333 });
+            break;
+        }
+            
+        case config::settings::testnet_server:
+        {
+            hosts_file = "testnet-hosts-server.cache";
+            identifier = 118034699;
+            inbound_port = 18333;
+            seeds.reserve(4);
+            seeds.push_back({ "testnet1.libbitcoin.net", 18333 });
+            seeds.push_back({ "testnet2.libbitcoin.net", 18333 });
+            seeds.push_back({ "testnet3.libbitcoin.net", 18333 });
+            seeds.push_back({ "testnet4.libbitcoin.net", 18333 });
+            break;
+        }
+            
+        case config::settings::regtest_server:
+        {
+            hosts_file = "regtest-hosts-server.cache";
+            identifier = 3669344250;
+            inbound_port = 18444;
+            
             // Regtest is private network only, so there is no seeding.
             break;
         }
