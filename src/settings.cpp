@@ -79,33 +79,46 @@ settings::settings(config::settings context)
     {
         case config::settings::mainnet:
         {
-            hosts_file = "hosts-node.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::mainnet";
+
+            hosts_file = "hosts_node.cache";
+            debug_file = "debug_node.log";
+            error_file = "error_node.log";
+            archive_directory = "archive-node";
             identifier = 3652501241;
             inbound_port = 8333;
-            seeds.reserve(4);
+            seeds.reserve(3);
             seeds.push_back({ "mainnet1.libbitcoin.net", 8333 });
             seeds.push_back({ "mainnet2.libbitcoin.net", 8333 });
             seeds.push_back({ "mainnet3.libbitcoin.net", 8333 });
-            seeds.push_back({ "mainnet4.libbitcoin.net", 8333 });
             break;
         }
 
         case config::settings::testnet:
         {
-            hosts_file = "testnet-hosts-node.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::testnet";
+
+            hosts_file = "testnet_hosts_node.cache";
+            debug_file = "debug_testnet_node.log";
+            error_file = "error_testnet_node.log";
+            archive_directory = "archive-testnet-node";
             identifier = 118034699;
             inbound_port = 18333;
-            seeds.reserve(4);
+            seeds.reserve(3);
             seeds.push_back({ "testnet1.libbitcoin.net", 18333 });
             seeds.push_back({ "testnet2.libbitcoin.net", 18333 });
             seeds.push_back({ "testnet3.libbitcoin.net", 18333 });
-            seeds.push_back({ "testnet4.libbitcoin.net", 18333 });
             break;
         }
 
         case config::settings::regtest:
         {
-            hosts_file = "regtest-hosts-node.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::regtest";
+
+            hosts_file = "regtest_hosts_node.cache";
+            debug_file = "debug_regtest_node.log";
+            error_file = "error_regtest_node.log";
+            archive_directory = "archive-regtest-node";
             identifier = 3669344250;
             inbound_port = 18444;
 
@@ -115,33 +128,46 @@ settings::settings(config::settings context)
             
         case config::settings::mainnet_server:
         {
-            hosts_file = "hosts-server.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::mainnet_server";
+
+            hosts_file = "hosts_server.cache";
+            debug_file = "debug_server.log";
+            error_file = "error_server.log";
+            archive_directory = "archive-server";
             identifier = 3652501241;
             inbound_port = 8333;
-            seeds.reserve(4);
+            seeds.reserve(3);
             seeds.push_back({ "mainnet1.libbitcoin.net", 8333 });
             seeds.push_back({ "mainnet2.libbitcoin.net", 8333 });
             seeds.push_back({ "mainnet3.libbitcoin.net", 8333 });
-            seeds.push_back({ "mainnet4.libbitcoin.net", 8333 });
             break;
         }
             
         case config::settings::testnet_server:
         {
-            hosts_file = "testnet-hosts-server.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::testnet_server";
+
+            hosts_file = "testnet_hosts_server.cache";
+            debug_file = "debug_testnet_node.log";
+            error_file = "error_testnet_node.log";
+            archive_directory = "archive-testnet-server";
             identifier = 118034699;
             inbound_port = 18333;
-            seeds.reserve(4);
+            seeds.reserve(3);
             seeds.push_back({ "testnet1.libbitcoin.net", 18333 });
             seeds.push_back({ "testnet2.libbitcoin.net", 18333 });
             seeds.push_back({ "testnet3.libbitcoin.net", 18333 });
-            seeds.push_back({ "testnet4.libbitcoin.net", 18333 });
             break;
         }
             
         case config::settings::regtest_server:
         {
-            hosts_file = "regtest-hosts-server.cache";
+            LOG_INFO(LOG_NETWORK) << "Using network context: config::settings::regtest_server";
+
+            hosts_file = "regtest_hosts_server.cache";
+            debug_file = "debug_regtest_node.log";
+            error_file = "error_regtest_node.log";
+            archive_directory = "archive-regtest-server";
             identifier = 3669344250;
             inbound_port = 18444;
             
@@ -154,6 +180,13 @@ settings::settings(config::settings context)
         {
         }
     }
+    // TODO: create config variables for these log messages
+    LOG_INFO(LOG_NETWORK) << "Using debug log file: " << debug_file;
+    LOG_INFO(LOG_NETWORK) << "Using error log file: " << error_file;
+    LOG_INFO(LOG_NETWORK) << "Using archive directory: " << archive_directory;
+    LOG_INFO(LOG_NETWORK) << "Using hosts cache file: " << hosts_file;
+    LOG_INFO(LOG_NETWORK) << "Using identifier: " << identifier;
+    LOG_INFO(LOG_NETWORK) << "Using inbound_port: " << inbound_port;
 }
 
 size_t settings::minimum_connections() const
